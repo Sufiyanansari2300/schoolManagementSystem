@@ -1,6 +1,5 @@
 import express from "express"
 import { create, deleteUser, fetch, update } from "../controller/userController.js";
-import { authenticateJWT } from "../libs/jwtFilter.js";
 import { authorizeRole } from "../libs/authorizationFilter.js";
 import Roles from "../enums/roles.js";
 
