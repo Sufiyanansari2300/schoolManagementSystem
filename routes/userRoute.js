@@ -1,11 +1,14 @@
 import express from "express"
 import { create, deleteUser, fetch, update } from "../controller/userController.js";
+import { authenticateJWT } from "../libs/jwtFilter.js";
+import { authorizeRole } from "../libs/authorizationFilter.js";
+import Roles from "../enums/roles.js";
 
 const route = express.Router();
 
-route.get("/getallusers", fetch)
-route.post ("/create",create)
-route.put("/update/:id", update)
-route.delete("/delete/:id",deleteUser)
+route.get("/getallusers", authorizeRole([Roles.SUPER_ADMIN]), fetch)
+route.post ("/create", authorizeRole([Roles.SUPER_ADMIN]), create)
+route.put("/update/:id", authorizeRole([Roles.SUPER_ADMIN]), update)
+route.delete("/delete/:id", authorizeRole([Roles.SUPER_ADMIN]), deleteUser)
 
 export default route;

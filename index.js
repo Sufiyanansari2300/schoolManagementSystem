@@ -3,6 +3,8 @@ import mongoose from "mongoose"
 import bodyParser from "body-parser"
 import dotenv from "dotenv"
 import route from "./routes/userRoute.js"
+import authRoute from "./routes/authenticationRoute.js"
+import { authenticateJWT } from "./libs/jwtFilter.js";
 
 const app = express ();
 app.use(bodyParser.json());
@@ -19,4 +21,6 @@ mongoose.connect(MONGOURL).then(()=>{
     })
 }).catch(error => console.log(error));
 
-app.use("/api/user", route)
+
+app.use("/sms/user", authenticateJWT, route)
+app.use("/sms/auth", authRoute)
