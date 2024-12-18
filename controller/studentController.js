@@ -9,6 +9,9 @@ export const create = async(req, res)=>{
         if (!classExist){
             return res.status(404).json(new ApiResponse(404, "Class not found.", null));
         }
+        if (classExist.studentIds.length >= classExist.capacity){
+            return res.status(400).json(new ApiResponse(400, "Class is full.", null));
+        }
         const savedStudent = await studentData.save();
         classExist.studentIds.push(savedStudent._id);
         await classExist.save();
