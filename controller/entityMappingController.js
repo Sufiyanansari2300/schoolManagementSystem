@@ -13,17 +13,13 @@ export const allocateSchoolAdmin = async (req, res)=>{
         if (userExist.role === Roles.SUPER_ADMIN){
             return res.status(200).json(new ApiResponse(404 , "Super admin is already having accessq to all schools.", null));
         }
-        console.log(schoolIds)
         const validSchools = await School.find({ _id: { $in: schoolIds } });
         if (validSchools.length !== schoolIds.length) {
             return res.status(400).json(new ApiResponse(400, "One or more school IDs are invalid.", null));
         }
-        console.log(validSchools.length, schoolIds.length)
         if (!userExist.schoolIds) {
-            console.log("HELLO")
             userExist.schoolIds = [];
         }
-        console.log(userExist)
         const uniqueSchoolIds = [...new Set([...userExist.schoolIds, ...schoolIds])];
         userExist.schoolIds = uniqueSchoolIds;
         await userExist.save();

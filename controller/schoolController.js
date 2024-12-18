@@ -1,5 +1,8 @@
 import ApiResponse from "../response/ApiResponse.js"
 import School from "../model/schoolModel.js"
+import User from "../model/userModel.js"
+import Class from "../model/classModel.js"
+import Student from "../model/studentModel.js"
 
 export const create = async(req, res)=>{
     try {
@@ -64,6 +67,19 @@ export const deleteSchool = async (req, res)=>{
         const school = await School.findOne({_id:id})
         if(!school){
             return res.status(404).json(new ApiResponse(404, "No school found.", null))
+        }
+        const users = await User.find({schoolIds:id});
+        for (const user of users) {
+            user.schoolIds = user.schoolIds.filter(id => id !== req.params.id);
+            await user.save();
+        }
+        const classes = await Class.find({schoolId:id});
+        for (const classData of classes) {
+            const students = await Student.find({classId:classData._id});
+            for (const student of students) {
+                await Student.findByIdAndDelete(student._id);
+            }
+            await Class.findByIdAndDelete(classData._id);
         }
         await School.findByIdAndDelete(id);
         res.status(201).json(new ApiResponse(200, "School deleted successfully.", null));

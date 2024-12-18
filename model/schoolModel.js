@@ -15,10 +15,10 @@ const schoolSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
-    classIds: [{
-        type: mongoose.Schema.Types.ObjectId,
+    classIds: {
+        type: [String],
         default: [],
-    }],
+    },
 }, {
     timestamps: true,
 });

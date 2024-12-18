@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     schoolIds: {
-        type: String,
+        type: [String],
         default: [],
     }
 });

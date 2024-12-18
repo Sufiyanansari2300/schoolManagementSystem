@@ -7,6 +7,8 @@ import authRoute from "./routes/authenticationRoute.js"
 import { authenticateJWT } from "./libs/jwtFilter.js";
 import schoolRoute from "./routes/schoolRoute.js";
 import entityMappingRoute from "./routes/entityMappingRoute.js"
+import classRoute from "./routes/classRoute.js"
+import studentRoute from "./routes/studentRoute.js"
 
 const app = express ();
 app.use(bodyParser.json());
@@ -26,5 +28,7 @@ mongoose.connect(MONGOURL).then(()=>{
 
 app.use("/sms/user", authenticateJWT, route)
 app.use("/sms/school", authenticateJWT, schoolRoute)
+app.use("/sms/class", authenticateJWT, classRoute)
+app.use("/sms/student", authenticateJWT, studentRoute)
 app.use("/sms/map", authenticateJWT, entityMappingRoute)
 app.use("/sms/auth", authRoute)
