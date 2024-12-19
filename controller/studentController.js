@@ -67,11 +67,14 @@ export const update = async (req, res)=>{
     try {
         const studentData = new Student(req.body);
         const {classId} = studentData;
-        const classExist = await Class.findById({classId});
+        const existingStudent = await Student.findOne({_id:req.params.id})
+        if (!existingStudent) {
+            return res.status(404).json(new ApiResponse(404, "Student not found.", null));
+        }
+        const classExist = await Class.findById(studentData.classId);
         if (!classExist) {
             return res.status(404).json(new ApiResponse(404, "Class not found.", null));
         }
-        const existingStudent = await Student.findOne({_id:req.params.id})
         existingStudent.name = studentData.name || existingStudent.name;
         existingStudent.age = studentData.age || existingStudent.age;
         existingStudent.gender = studentData.gender || existingStudent.gender;

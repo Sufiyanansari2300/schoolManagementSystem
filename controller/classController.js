@@ -56,21 +56,19 @@ export const fetchById = async (req, res)=>{
 export const update = async (req, res)=>{
     try {
         const classData = new Class(req.body);
-        const {name} = classData;
-        const {schoolId} = classData;
-        const schoolExists = await School.findById({schoolId});
+        const existingClass = await Class.findById(req.params.id);
+        if (!existingClass){
+            return res.status(400).json(new ApiResponse(400, "Class not found.", null));
+        }
+        const schoolExists = await School.findById(existingClass.schoolId);
         if (!schoolExists) {
             return res.status(404).json(new ApiResponse(404, "School not found.", null));
         }
-        const classExist = await Class.findOne({name, schoolId});
-        if (classExist){
-            return res.status(400).json(new ApiResponse(400, "Class already exist.", null));
-        }
-        const existingClass = await Class.findOne({_id:req.params.id})
-        existingClass.name = name || existingClass.name;
-        existingClass.schoolId = schoolId || existingClass.schoolId;
-        existingClass.capacity = capacity || existingClass.capacity;
-        existingClass.resources = resources || existingClass.resources;
+        existingClass.name = classData.name || existingClass.name;
+        existingClass.schoolId = classData.schoolId || existingClass.schoolId;
+        existingClass.capacity = classData.capacity || existingClass.capacity;
+        existingClass.resources = classData.resources || existingClass.resources;
+        existingClass.schoolId = classData.schoolId || existingClass.schoolId;
         const updateClass = await Class.findByIdAndUpdate(req.params.id, existingClass, {new : true});
         res.status(200).json(new ApiResponse(200, "Class updatd successfully.", updateClass));
     } catch (error) {
